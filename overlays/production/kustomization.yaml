@@ -2,21 +2,21 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: production
 resources:
-  - ../../base
-  - namespace.yaml
-  - db-backup-cronjob.yaml
+- ../../base
+- namespace.yaml
+- db-backup-cronjob.yaml
 configMapGenerator:
-  - literals:
-      - MODE=forward
-    name: broadcaster-config
+- literals:
+  - MODE=forward
+  name: broadcaster-config
 generatorOptions:
   disableNameSuffixHash: true
 images:
 - name: europe-west4-docker.pkg.dev/dauntless-glow-470207-m2/my-repository/broadcaster-service
-  newTag: 49a2c4d358edfbbb78eecefc8e0a9a568ab1fdb8
+  newTag: b0a1091e21cf87c2c41ca4b51bc846b8b7955bb0
 - name: europe-west4-docker.pkg.dev/dauntless-glow-470207-m2/my-repository/frontend
-  newTag: 49a2c4d358edfbbb78eecefc8e0a9a568ab1fdb8
+  newTag: b0a1091e21cf87c2c41ca4b51bc846b8b7955bb0
 - name: europe-west4-docker.pkg.dev/dauntless-glow-470207-m2/my-repository/image-service
-  newTag: 49a2c4d358edfbbb78eecefc8e0a9a568ab1fdb8
+  newTag: b0a1091e21cf87c2c41ca4b51bc846b8b7955bb0
 - name: europe-west4-docker.pkg.dev/dauntless-glow-470207-m2/my-repository/todo-service
-  newTag: 49a2c4d358edfbbb78eecefc8e0a9a568ab1fdb8
+  newTag: b0a1091e21cf87c2c41ca4b51bc846b8b7955bb0
