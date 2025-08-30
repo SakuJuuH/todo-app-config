@@ -13,21 +13,18 @@ jobs:
                   ref: main
                   fetch-depth: 0
 
-            - run: |
-                  echo ${{ toJson(github.event) }}
-
             - name: Map environment
               run: |
-                  if [[ "${{ github.event.event_type }}" == "deploy-production" ]]; then
+                  if [[ "${{ github.event.action }}" == "deploy-production" ]]; then
                     echo "ENV=production" >> $GITHUB_ENV
-                  elif [[ "${{ github.event.event_type }}" == "deploy-staging" ]]; then
+                  elif [[ "${{ github.event.action }}" == "deploy-staging" ]]; then
                     echo "ENV=staging" >> $GITHUB_ENV
                   fi
 
             - name: Validate event type
               run: |
                   if [[ -z "${{ env.ENV }}" ]]; then
-                    echo "Unknown event type: ${{ github.event.event_type }}"
+                    echo "Unknown event type: ${{ github.event.action }}"
                     exit 1
                   fi
 
@@ -51,4 +48,4 @@ jobs:
               with:
                   default_author: github_actions
                   add: "overlays/${{ env.ENV }}/kustomization.yaml"
-                  message: "New version released for ${{ env.ENV }} ${{ github.event.client_payload.sha }}"
+                  message: "New version released for ${{ env.ENV }}: ${{ github.sha }}"
