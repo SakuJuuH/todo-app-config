@@ -11,10 +11,10 @@ generatorOptions:
   disableNameSuffixHash: true
 images:
 - name: europe-west4-docker.pkg.dev/dauntless-glow-470207-m2/my-repository/broadcaster-service
-  newTag: 98805ff47cbd5fc3c3b9b6498a42664ce62b69d4
+  newTag: 49a2c4d358edfbbb78eecefc8e0a9a568ab1fdb8
 - name: europe-west4-docker.pkg.dev/dauntless-glow-470207-m2/my-repository/frontend
-  newTag: 98805ff47cbd5fc3c3b9b6498a42664ce62b69d4
+  newTag: 49a2c4d358edfbbb78eecefc8e0a9a568ab1fdb8
 - name: europe-west4-docker.pkg.dev/dauntless-glow-470207-m2/my-repository/image-service
-  newTag: 98805ff47cbd5fc3c3b9b6498a42664ce62b69d4
+  newTag: 49a2c4d358edfbbb78eecefc8e0a9a568ab1fdb8
 - name: europe-west4-docker.pkg.dev/dauntless-glow-470207-m2/my-repository/todo-service
-  newTag: 98805ff47cbd5fc3c3b9b6498a42664ce62b69d4
+  newTag: 49a2c4d358edfbbb78eecefc8e0a9a568ab1fdb8
