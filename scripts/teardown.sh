@@ -9,4 +9,4 @@ fi
 
 ENV=$1
 
-kubectl delete -k ./kubernetes/overlays/"$ENV"
+kubectl delete -k ./overlays/"$ENV"

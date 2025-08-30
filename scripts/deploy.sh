@@ -9,4 +9,4 @@ fi
 
 ENV=$1
 
-kubectl apply -k ./kubernetes/overlays/"$ENV"
+kubectl apply -k ./overlays/"$ENV"
