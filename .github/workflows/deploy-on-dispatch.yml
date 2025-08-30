@@ -13,6 +13,11 @@ jobs:
                   ref: main
                   fetch-depth: 0
 
+            - run: |
+                  echo ${{ github.event }}
+                  echo ${{ github.event.event_type }}
+                  echo ${{ github.event.client_payload }}
+
             - name: Map environment
               run: |
                   if [[ "${{ github.event.event_type }}" == "deploy-production" ]]; then
