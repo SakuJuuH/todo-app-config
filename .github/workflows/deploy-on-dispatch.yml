@@ -4,6 +4,14 @@ on:
     repository_dispatch:
         types: [deploy-production, deploy-staging]
 
+env:
+    CLUSTER_NAME: dwk-cluster
+    GKE_ZONE: europe-west4-a
+    REGISTRY: europe-west4-docker.pkg.dev
+    PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+    GKE_CREDENTIALS: ${{ secrets.GKE_SA_KEY }}
+    DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
 jobs:
     update-kustomization:
         runs-on: ubuntu-latest
@@ -12,7 +20,6 @@ jobs:
               with:
                   ref: main
                   fetch-depth: 0
-
             - name: Map environment
               run: |
                   if [[ "${{ github.event.action }}" == "deploy-production" ]]; then
@@ -20,14 +27,27 @@ jobs:
                   elif [[ "${{ github.event.action }}" == "deploy-staging" ]]; then
                     echo "ENV=staging" >> $GITHUB_ENV
                   fi
-
             - name: Validate event type
               run: |
                   if [[ -z "${{ env.ENV }}" ]]; then
                     echo "Unknown event type: ${{ github.event.action }}"
                     exit 1
                   fi
+            - name: Authenticate to Google Cloud
+              uses: google-github-actions/auth@v3
+              with:
+                  credentials_json: "${{ env.GKE_CREDENTIALS }}"
+            - name: Set up Google Cloud SDK
+              uses: google-github-actions/setup-gcloud@v3
 
+            - name: Configure Docker
+              run: gcloud auth configure-docker ${{ env.REGISTRY }} --quiet
+            - name: Get GKE credentials
+              uses: google-github-actions/get-gke-credentials@v2
+              with:
+                  cluster_name: ${{ env.CLUSTER_NAME }}
+                  project_id: ${{ env.PROJECT_ID }}
+                  location: ${{ env.GKE_ZONE }}
             - name: Set up Kustomize
               uses: imranismail/setup-kustomize@v2.1.0
 
