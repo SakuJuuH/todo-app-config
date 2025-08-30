@@ -1,0 +1,51 @@
+name: GitOps Deploy via Dispatch
+
+on:
+    repository_dispatch:
+        types: [deploy-production, deploy-staging]
+
+jobs:
+    update-kustomization:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5.0.0
+              with:
+                  ref: main
+                  fetch-depth: 0
+
+            - name: Map environment
+              run: |
+                  if [[ "${{ github.event.event_type }}" == "deploy-production" ]]; then
+                    echo "ENV=production" >> $GITHUB_ENV
+                  elif [[ "${{ github.event.event_type }}" == "deploy-staging" ]]; then
+                    echo "ENV=staging" >> $GITHUB_ENV
+                  fi
+
+            - name: Validate event type
+              run: |
+                  if [[ -z "${{ env.ENV }}" ]]; then
+                    echo "Unknown event type: ${{ github.event.event_type }}"
+                    exit 1
+                  fi
+
+            - name: Set up Kustomize
+              uses: imranismail/setup-kustomize@v2.1.0
+
+            - name: Update image tags
+              run: |
+                  kubectl create namespace ${{ env.ENV }} || true
+                  kubectl config set-context --current --namespace=${{ env.ENV }}
+                  cd overlays/${{ env.ENV }}
+                  kustomize edit set image ${{ github.event.client_payload.frontend_image }}
+                  kustomize edit set image ${{ github.event.client_payload.todo_service_image }}
+                  kustomize edit set image ${{ github.event.client_payload.image_service_image }}
+                  kustomize edit set image ${{ github.event.client_payload.broadcaster_service_image }}
+                  kustomize build . | kubectl apply -f -
+                  kubectl set env deployment/broadcaster-service DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }} -n ${{ env.ENV }}
+
+            - name: Commit updated kustomization.yaml
+              uses: EndBug/add-and-commit@v9
+              with:
+                  default_author: github_actions
+                  add: "overlays/${{ env.ENV }}/kustomization.yaml"
+                  message: "New version released for ${{ env.ENV }} ${{ github.event.client_payload.sha }}"

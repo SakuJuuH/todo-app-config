@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: "https://github.com/SakuJuuH/kubernetesSubmissions.git"
-    targetRevision: HEAD
-    path: todo-app/kubernetes/overlays/staging
+    repoURL: "https://github.com/SakuJuuH/todo-app-config.git"
+    targetRevision: main
+    path: overlays/staging
   destination:
     server: "https://kubernetes.default.svc"
     namespace: staging
